@@ -1,0 +1,27 @@
+{
+  "name": "GetUp",
+  "version": "1.0.0",
+  "description": "Healthy Work Cycle Tracker",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "author": "NCE Group2",
+  "devDependencies": {
+    "electron": "^1.7.5",
+    "electron-builder": "latest"
+  },
+  "build": {
+    "appId": "your.id",
+    "mac": {
+      "category": "your.app.category.type",
+      "icon": "app/icons/app_icon.icns",
+      "extendInfo": {
+        "LSUIElement": 1
+      }
+    }
+  },
+  "dependencies": {}
+}
