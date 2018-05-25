@@ -85,3 +85,7 @@
 .electron-dev-info {
 	display: none;
 }
+
+.main-wrapper {
+  padding: 0 10px;
+}
