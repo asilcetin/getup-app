@@ -8,6 +8,9 @@ const btnResume = document.getElementById('btnResume')
 const btnStop = document.getElementById('btnStop')
 const btnQuit = document.getElementById('btnQuit')
 
+const btnSettings = document.getElementById('btnSettings')
+const btnHome = document.getElementById('btnHome')
+
 const btnSaveSettings = document.getElementById('btnSaveSettings')
 
 btnPause.addEventListener('click', function (event) {
@@ -30,6 +33,14 @@ btnSaveSettings.addEventListener('click', function (event) {
         let defaultTimeLeft = document.getElementById('defaultTimeLeft').value;
         ipcRenderer.send('saveSettings', defaultTimeLeft);
 });
+
+btnSettings.addEventListener('click', function (event) {
+  window.location = "settings.html";
+})
+
+btnHome.addEventListener('click', function (event) {
+  window.location = "index.html";
+})
 
 //Update the total session stat
 ipcRenderer.on('totalCyclesToday', (event, message) => {
