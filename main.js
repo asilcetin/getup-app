@@ -4,7 +4,8 @@
  *
  */
  
-const {app, BrowserWindow, Tray, ipcMain} = require('electron')
+const electron = require('electron');
+	const {app, BrowserWindow, Tray, ipcMain} = electron;
 
 const path = require('path')
 const url = require('url')
@@ -46,7 +47,7 @@ function createWindow() {
   }))
 
   // Open the DevTools.
-  window.webContents.openDevTools()
+  //window.webContents.openDevTools()
 
   // Hide the window when it loses focus
   window.on('blur', () => {
@@ -74,12 +75,25 @@ function showWindow() {
 function getWindowPosition() {
   const windowBounds = window.getBounds()
   const trayBounds = tray.getBounds()
+  //To create the window at the right place cross-platform we'll fetch the screen dimensions
+  //If the tray icon is in the lower half of the screen, we'll show the window upwards
+  //Top left is 0,0 and x increases right, y downwards
+  var workAreaSize=electron.screen.getPrimaryDisplay().workAreaSize;
+  
+  var x;
+  var y;
 
   // Center window horizontally below the tray icon
-  const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2))
+  // We'll be careful to make sure the window isn't outside the screen
+  x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2))
+  //Subtract this difference from x to adjust x by how much the window is outside of the screen
+  x-=x+windowBounds.width-workAreaSize.width;
 
   // Position window 4 pixels vertically below the tray icon
-  const y = Math.round(trayBounds.y + trayBounds.height + 3)
+	if(trayBounds.y<workAreaSize.height/2) //If we're in the upper half of the screen
+		y = Math.round(trayBounds.y + trayBounds.height + 3)
+	else
+		y = Math.round(trayBounds.y - trayBounds.height - 3 - windowBounds.height) //Bottom half
 
   return {x: x, y: y}
 }
@@ -88,13 +102,25 @@ function getWindowPosition() {
 function getPopupPosition() {
   const popupBounds = popup.getBounds()
   const trayBounds = tray.getBounds()
-
+  //To create the window at the right place cross-platform we'll fetch the screen dimensions
+  //If the tray icon is in the lower half of the screen, we'll show the window upwards
+  //Top left is 0,0 and x increases right, y downwards
+  var workAreaSize=electron.screen.getPrimaryDisplay().workAreaSize;
+  
+  var x;
+  var y;
+  
   // Center window horizontally below the tray icon
-  const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (popupBounds.width / 2))
+  x = Math.round(trayBounds.x + (trayBounds.width / 2) - (popupBounds.width / 2));
+  //Subtract this difference from x to adjust x by how much the window is outside of the screen
+  x-=x+popupBounds.width-workAreaSize.width;
 
-  // Position window 4 pixels vertically below the tray icon
-  const y = Math.round(trayBounds.y + trayBounds.height + 3)
-
+   // Position window 4 pixels vertically below the tray icon
+	if(trayBounds.y<workAreaSize.height/2) //If we're in the upper half of the screen
+		y = Math.round(trayBounds.y + trayBounds.height + 3);
+	else
+		y = Math.round(trayBounds.y - trayBounds.height - 3 - popupBounds.height); //Bottom half
+  
   return {x: x, y: y}
 }
 
