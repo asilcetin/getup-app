@@ -1,95 +1,138 @@
-/* Variables */
-:root {
-  --background-color: #f5f5f4;
-  --text-color: #333;
-  --window-border-radius: 6px;
-  --font-size: 14px;
+*
+{
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+	color: black;
 }
 
-/* The arrow at the top of the window */
-.header-arrow {
-  position: absolute;
-  top: 2px;
-  left: 50%;
-  margin-left: -5px;
-  height: 10px;
-  width: 10px;
-  transform: rotate(45deg);
-  background-color: #e8e6e8;
+body
+{
+	background: white;
 }
 
-.window {
-  position: absolute;
-  top: 5px;
+a:hover
+{
+	cursor: pointer;
 }
 
-.toolbar {
-  box-shadow: none;
+@font-face 
+{
+      font-family: 'fontello';
+      src: url('../font/fontello.eot?69069987');
+      src: url('../font/fontello.eot?69069987#iefix') format('embedded-opentype'),
+           url('../font/fontello.woff?69069987') format('woff'),
+           url('../font/fontello.ttf?69069987') format('truetype'),
+           url('../font/fontello.svg?69069987#fontello') format('svg');
+      font-weight: normal;
+      font-style: normal;
 }
 
-.window, .toolbar-header {
-  border-top-left-radius: var(--window-border-radius);
-  border-top-right-radius: var(--window-border-radius);
+.controls
+{
+	padding-top: 50px;
+	padding-bottom: 50px;
+	text-align: center;
 }
 
-.window-content {
-  background-color: var(--background-color);
+.navigation
+{
+	position: absolute;
+	bottom: 2px;
+	margin-top: 2px;
+	width: 100%;
 }
 
-.column {
-  width: 50%;
-  float: left;
-  margin: auto;
-  margin-top: 16px;
-  text-align: center;
+.navigation a
+{
+	display: block;
+	float: left;
+	width: 25%;
+	text-align: center;
 }
 
-.summary {
-  width: 100%;
-  margin: auto;
-  text-align: center;
-  margin-top: 16px;
-  font-size: var(--font-size);
-  font-weight: 300;
-  color: var(--text-color);
+.navigation:after
+{
+	clear: both;
 }
 
-.reading {
-  font-size: calc(var(--font-size) + 6px);
-  font-weight: 300;
-  color: var(--text-color);
+.icon
+{
+	font-variant: normal;
+    text-transform: none;
+	font-family: "fontello";
+	font-style: normal;
+	font-size: 2em;
 }
 
-.description {
-  text-transform: uppercase;
-  color: #666;
-  font-size: calc(var(--font-size) - 3px);
-  font-weight: 300;
+.exerciseIcon
+{
+	font-size: 3em;
 }
 
-.footer-link {
-  padding-top: 8px;
-  padding-left: 10px;
-  font-size: calc(var(--font-size) - 4px);
-  float: left;
+.timers
+{
+	
 }
 
-.footer-link a {
-  color: var(--text-color);
+.timerArrow
+{
+	font-size: 1.5em;
+	text-decoration: none;
+	color: black;
 }
 
-/*
- * GetUp App Styles
- */
-
-.electron-dev-info {
-	display: none;
+.workTimer, .exerciseTimer, .timerIcon
+{
+	width: 25%;
+	float: left;
+	text-align: center;
+	height: 110px;
 }
 
-.main-wrapper {
-  padding: 0 10px;
+.workTimer:after, .exerciseTimer:after, .timerIcon:after
+{
+	clear: both;
 }
 
-.footer {
-  margin-top:27%;
+.timerIcon
+{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.stopControl, .playPauseControl
+{
+	font-size: 3em;
+}
+
+.stopControl
+{
+	color: red;
+}
+
+.playPauseControl
+{
+	color: green;
+}
+
+.stopControl
+{
+	margin-right: 5px;
+}
+
+.timerIcon .icon
+{
+	
+}
+
+#workDuration, #exerciseDuration, #remainingDuration
+{
+	font-size: 3em;
+}
+
+.runningPlayPauseControl .playPauseControl
+{
+	color: orange !important;
 }

@@ -30,8 +30,9 @@ function createTray() {
 // Create the window
 function createWindow() {
   window = new BrowserWindow({
-        width: 350,
-        height: 450,
+		//Width to height golden ratio makes for a more pleasant-appearing size
+        width: 300,
+        height: 480,
         show: false,
         frame: false,
         fullscreenable: false,
@@ -47,8 +48,8 @@ function createWindow() {
   }))
 
   // Open the DevTools.
-  //window.webContents.openDevTools()
-
+  window.webContents.openDevTools()
+  
   // Hide the window when it loses focus
   window.on('blur', () => {
     if (!window.webContents.isDevToolsOpened()) {
@@ -205,7 +206,9 @@ app.on('ready', createPopup)
  * GetUp timer functions
  *
  */
-
+ 
+var timeFlow=false;
+ 
 //Setter for the time left
 function setTimeLeft(seconds) {
 	timeLeft = seconds
@@ -305,10 +308,18 @@ var doWork = function() {
 	//Inside the break cycle
 	else if (breakCycle) {
 		updateTray(--breakTime)
+		if(window!=undefined)
+		{
+			window.webContents.send('timeUpdate', breakTime);
+		}
 	}
 	//Inside the work cycle
 	else {
 		updateTray(--timeLeft)
+		if(window!=undefined)
+		{
+			window.webContents.send('timeUpdate', timeLeft);
+		}
 	}
 	//Send data to the renderer
 	createStats();	
@@ -323,7 +334,7 @@ var doError = function() {
 var ticker = new AdjustingInterval(doWork, 1000, doError);
 
 // Start the timer on launch
-ticker.start();
+//ticker.start();
 
 
 /**
@@ -331,6 +342,46 @@ ticker.start();
  * App button controllers
  *
  */
+ 
+ipcMain.on('getData',
+function(event)
+{
+	window.webContents.send('init', {workDuration: defaultTimeLeft, exerciseDuration: defaultBreakTime, remainingDuration: timeLeft});
+}
+);
+ 
+ipcMain.on('exerciseUp', 
+function(event)
+{
+	//Increase exercise time by 1 minute
+	defaultBreakTime+=60;
+	window.webContents.send('exercise', defaultBreakTime);
+});
+
+ipcMain.on('exerciseDown', 
+function(event)
+{
+	//Decrease exercise time by 1 minute
+	defaultBreakTime-=60;
+	window.webContents.send('exercise', defaultBreakTime);
+});
+
+ipcMain.on('workUp', 
+function(event)
+{
+	//Increase work time by 1 minute
+	defaultTimeLeft+=60;
+	window.webContents.send('work', defaultTimeLeft);
+}); 
+
+ipcMain.on('workDown', 
+function(event)
+{
+	//Increase work time by 1 minute
+	defaultTimeLeft-=60;
+	window.webContents.send('work', defaultTimeLeft);
+});  
+ 
 ipcMain.on('timerPause', function (event) {
   if(timeFlow) {
   	ticker.stop();
