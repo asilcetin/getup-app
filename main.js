@@ -5,7 +5,7 @@
  */
  
 const electron = require('electron');
-	const {app, BrowserWindow, Tray, ipcMain} = electron;
+const {app, BrowserWindow, Tray, ipcMain} = electron;
 
 const path = require('path')
 const url = require('url')
@@ -19,7 +19,7 @@ let popup
 
 // Create the tray
 function createTray() {
-  tray = new Tray(path.join(__dirname, 'app/icons/work_icon.png'))
+  tray = new Tray(path.join(__dirname, 'app/icons/work_iconTemplate.png'))
   timeDisplay = convertTime(defaultTimeLeft).toString()
   tray.setTitle(timeDisplay)
   tray.on('click', function (event) {
@@ -48,7 +48,7 @@ function createWindow() {
   }))
 
   // Open the DevTools.
-  window.webContents.openDevTools()
+  // window.webContents.openDevTools()
   
   // Hide the window when it loses focus
   window.on('blur', () => {
@@ -252,9 +252,9 @@ function updateTray(seconds, icon) {
 	timeDisplay = convertTime(seconds).toString()
 	tray.setTitle(timeDisplay)
 	if (icon == 'breakicon') {
-		tray.setImage(path.join(__dirname, 'app/icons/break_icon.png'))
+		tray.setImage(path.join(__dirname, 'app/icons/break_iconTemplate.png'))
 	} else if (icon == 'workicon') {
-		tray.setImage(path.join(__dirname, 'app/icons/work_icon.png'))
+		tray.setImage(path.join(__dirname, 'app/icons/work_iconTemplate.png'))
 	}
 }
 
