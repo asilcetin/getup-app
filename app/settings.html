@@ -1,104 +1,95 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>GetUp</title>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="google-signin-scope" content="profile email">
+    	<script src="https://apis.google.com/js/platform.js" async defer></script>		
+    	<title>GetUp</title>
+		<link rel="stylesheet" href="css/style.css">
+		<!-- css and scripts for materialdesign -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+    	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/4.12.0/bootstrap-social.min.css">
+	</head>
+	<body>
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="vendor/css/photon.min.css">
-    <link rel="stylesheet" href="css/style.css">
+		<div class="window">
+			<div class="settings">
+			<form>
+				<h2></h2>
+				<div class="form-check">
+					<label>
+						<input type="checkbox" name="notificationsCheck"  onclick="handleNotificationsSettings()" id="notificationsCheck" checked> <span class="label-text">Allow Notifications</span>
+					</label>
+				</div>
+				<div class="form-check">
+					<label>
+						<input type="checkbox" name="soundsCheck" id="sounds" checked> <span class="label-text">Sounds</span>
+					</label>
+				</div>
+				<div class="form-check">
+					<label>
+						<input type="checkbox" name="calendarCheck" disabled> <span class="label-text">Log cycles to calendar</span>
+					</label>
+				</div>
+			</form>
 
-  </head>
-  <body>
-    <div class="window">
-
-		<header class="toolbar toolbar-header">
-		  <h1 class="title">Header with actions</h1>
-		
-		  <div class="toolbar-actions">
-		    <div class="btn-group">
-		      <button id="btnHome" class="btn btn-default">
-		        <span class="icon icon-home"></span>
-		      </button>
-		      <button id="btnSettings" class="btn btn-default active">
-		        <span class="icon icon-cog"></span>
-		      </button>
-		      <button class="btn btn-default">
-		        <span class="icon icon-cloud"></span>
-		      </button>
-		      <button class="btn btn-default">
-		        <span class="icon icon-popup"></span>
-		      </button>
-		      <button class="btn btn-default">
-		        <span class="icon icon-shuffle"></span>
-		      </button>
-		    </div>
-		
-		    <button class="btn btn-default">
-		      <span class="icon icon-home icon-text"></span>
-		      Filters
-		    </button>
-		
-		    <button class="btn btn-default btn-dropdown pull-right">
-		      <span class="icon icon-megaphone"></span>
-		    </button>
-		  </div>
-		</header>
-		
-		<div class="main-wrapper">
-
-	    <h1>GetUp</h1>
-	    
-	    <div class="electron-dev-info">
-		    <!-- All of the Node.js APIs are available in this renderer process. -->
-		    We are using Node.js <script>document.write(process.versions.node)</script>,
-		    Chromium <script>document.write(process.versions.chrome)</script>,
-		    and Electron <script>document.write(process.versions.electron)</script>.
-	    </div>
-
-
-
-		  <div class="form-group">
-		    <label>Set work time</label>
-		    <input type="text" class="form-control" id="defaultTimeLeft">
-		  </div>
-		  <div class="form-actions">
-		    <button class="btn btn-form btn-default">Cancel</button>
-		    <button class="btn btn-form btn-primary" id="btnSaveSettings">OK</button>
-		  </div>
-		  
-		  
-		  <p>Today's total sessions:</p>
-		  <p id="todaysCyles"></p>
-
+			<div class="notification_settings">
+			<form id="custom_notifications" name="custom_notifications">
+				<div class="work_notification">
+  					<p id="work_notification_text">Work Notification:</p>
+  				 	<input type="text" name="work_notification" id="work_notification" placeholder="Back to work!"><br>
+  				 </div>
+  				 <div class="break_notification">
+  					<p id="break_notification_text">Break Notification: </p>
+  					<input type="text" name="break_notification" id="break_notification" placeholder="Have a break!"><br>
+  				</div>
+  				<input type="checkbox" onclick="checkFluency()"  id="fluency" checked />
+			</form>
+			<div class="login">
+				<p class="login_text">In order to log your cycles to your Google Calendar you should login with your Google Account.</p>
+			</div>
+			</div>
 		</div>
+		<a id="google-button" class="btn btn-block btn-social btn-google" style="margin-left: 12%; margin-right: 12%; margin-top: 4%;">
+  			<i class="fa fa-google"></i> Sign in with Google
+		</a>
+			<nav class="navigation">
+				<a id="home" href="index.html"><i class="icon">&#xe807;</i></a>
+				<a id="settings"><i class="icon_active">&#xe800;</i></a>
+				<a id="stats" href="stats.html"><i class="icon">&#xe808;</i></a>
+				<a id="quit"><i class="icon">&#xe809;</i></a>
+			</nav>	
 		
-		<div class="footer">
-		<footer class="toolbar toolbar-footer">
-		  <div class="toolbar-actions">
-		    <button id="btnPause" class="btn btn-default">
-		      Pause
-		    </button>
-		    <button id="btnResume" class="btn btn-default">
-		      Resume/Start
-		    </button>
-		    <button id="btnStop" class="btn btn-default">
-		      Stop
-		    </button>		    		
-		    <button class="btn btn-primary pull-right">
-		      Save
-		    </button>
-		    <button id="btnQuit" class="btn btn-default">
-		      Quit
-		    </button>		
-		  </div>
-		</footer>
 		</div>
+	</body>
+	<script>
+		require("../app/js/renderer_settings.js");
+		require("../app/js/renderer_popup.js");
+	</script>
+<script>
+	
+function handleNotificationsSettings(){
+    var checkbox = document.getElementById('notificationsCheck');
+    var work_notification = document.getElementById('work_notification');
+    var break_notification = document.getElementById('break_notification');
+    var work_notification_text = document.getElementById('work_notification_text');
+    var break_notification_text = document.getElementById('break_notification_text');
 
 
-  </body>
-  <script>
-    // You can also require other files to run in this process
-    require("../app/js/renderer_index.js")
-  </script>
+	if (checkbox.checked != true) {
+  		work_notification.disabled = true;
+  		break_notification.disabled = true;
+  		work_notification_text.style.color = 'gray';
+  		break_notification_text.style.color = 'gray';
+	} else {
+  		work_notification.disabled = false;
+  		break_notification.disabled = false;
+  		work_notification_text.style.color = 'black';
+  		break_notification_text.style.color = 'black';
+	}
+}
+
+</script>
 </html>

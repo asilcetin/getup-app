@@ -10,8 +10,12 @@ var appPath = app.getAppPath();
 
 //Update popupMessage
 ipcRenderer.on('popupMessage', (event, message) => {
-    document.getElementById("popupMessage").innerHTML = message.popup;
-    playNotificationSound();
+	var sounds = document.getElementById('sounds');
+	document.getElementById("popupMessage").innerHTML = message.popup;
+	console.log
+	if (sounds.checked == true) {
+    	playNotificationSound();
+	}
 });
 
 //Play sound for notifications

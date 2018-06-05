@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="google-signin-scope" content="profile email">
+    	<!-- <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com"> -->
+    	<script src="https://apis.google.com/js/platform.js" async defer></script>		
+    	<title>GetUp</title>
+		<link rel="stylesheet" href="css/style.css">
+		<!-- css and scripts for materialdesign -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+    	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/4.12.0/bootstrap-social.min.css">
+	</head>
+	<body>
+
+		<div class="window">
+			
+			<nav class="navigation">
+				<a id="home" href="index.html"><i class="icon">&#xe807;</i></a>
+				<a id="settings" href="settings.html"><i class="icon">&#xe800;</i></a>
+				<a id="stats"><i class="icon_active">&#xe808;</i></a>
+				<a id="quit"><i class="icon">&#xe809;</i></a>
+			</nav>	
+		
+		</div>
+	</body>
+	<script>
+		require("../app/js/renderer_settings.js");
+		require("../app/js/renderer_popup.js");
+	</script>	
+</html>

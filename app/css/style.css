@@ -38,9 +38,10 @@ a:hover
 .navigation
 {
 	position: absolute;
-	bottom: 2px;
+	bottom: 0px;
 	margin-top: 2px;
 	width: 100%;
+	background-color: white;
 }
 
 .navigation a
@@ -63,6 +64,16 @@ a:hover
 	font-family: "fontello";
 	font-style: normal;
 	font-size: 2em;
+}
+
+.icon_active 
+{
+	font-variant: normal;
+    text-transform: none;
+	font-family: "fontello";
+	font-style: normal;
+	font-size: 2em;
+	color: gray;
 }
 
 .exerciseIcon
@@ -125,6 +136,64 @@ a:hover
 .timerIcon .icon
 {
 	
+}
+
+.settings {
+	margin-left:15%;
+	margin-top:10%;
+}
+
+.notification_settings {
+	margin-top:7%;
+}
+
+.break_notification {
+	margin-top:3%;
+	width: 200px;
+}
+
+.work_notification {
+	width: 200px;
+}
+
+.form-check{
+	margin-top:3%;
+}
+
+.login {
+	margin-top: 4%;
+	margin-right: 15%;
+}
+
+.login_text {
+	font-size: 12px;
+}
+
+/*Check box*/
+input[type="checkbox"] + .label-text:before{
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing:antialiased;
+	width: 3em;
+	display: inline-block;
+	margin-right: 0px;
+}
+
+input[type="checkbox"]:checked + .label-text:before{
+	color: #2980b9;
+	animation: effect 250ms ease-in;
+}
+
+input[type="checkbox"]:disabled + .label-text{
+	color: #aaa;
+}
+
+input[type="checkbox"]:disabled + .label-text:before{
+	color: #ccc;
 }
 
 #workDuration, #exerciseDuration, #remainingDuration
