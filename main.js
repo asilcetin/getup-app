@@ -20,7 +20,7 @@ let popup
 // Create the tray
 function createTray() {
   tray = new Tray(path.join(__dirname, 'app/icons/work_iconTemplate.png'))
-  timeDisplay = convertTime(defaultTimeLeft).toString()
+  timeDisplay = " " + convertTime(defaultTimeLeft).toString()
   tray.setTitle(timeDisplay)
   tray.on('click', function (event) {
     toggleWindow()
@@ -128,7 +128,7 @@ function getPopupPosition() {
 function createPopup() {
   popup = new BrowserWindow({
         width: 200,
-        height: 100,
+        height: 50,
         show: false,
         frame: false,
         fullscreenable: false,
