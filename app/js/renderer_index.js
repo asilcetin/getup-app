@@ -21,6 +21,22 @@ const btnExerciseDown = document.getElementById("exerciseDown");
 const btnWorkUp = document.getElementById("workUp");
 const btnWorkDown = document.getElementById("workDown");
 
+
+//Seconds into mins:secs converter
+function convertTime (seconds) {
+	var minutes = Math.floor(seconds / 60);
+	var seconds = seconds - minutes * 60;
+	//Padding one-digit numbers with a zero
+	if (seconds < 10) { seconds = "0" + seconds };
+	return minutes + ":" + seconds;
+}
+//Convert seconds to minutes
+function toMinutes(seconds)
+{
+	return Math.floor(seconds/60);
+}
+
+
 //Send a request to main gor data
 ipcRenderer.send('getData');
 
@@ -92,26 +108,26 @@ btnHome.addEventListener('click', function (event) {
 ipcRenderer.on('work', 
 function (event, value)
 {
-	workDuration.innerHTML=value;
+	workDuration.innerHTML=toMinutes(value);
 });
 
 ipcRenderer.on('exercise', 
 function (event, value)
 {
-	exerciseDuration.innerHTML=value;
+	exerciseDuration.innerHTML=toMinutes(value);
 });
 
 ipcRenderer.on('init', 
 function (event, object)
 {
-	workDuration.innerHTML=object.workDuration;
-	exerciseDuration.innerHTML=object.exerciseDuration;
-	remainingDuration.innerHTML=object.remainingDuration;
+	workDuration.innerHTML=toMinutes(object.workDuration);
+	exerciseDuration.innerHTML=toMinutes(object.exerciseDuration);
+	remainingDuration.innerHTML=convertTime(object.remainingDuration);
 }
 );
 
 ipcRenderer.on('timeUpdate',
 function(event, value)
 {
-	remainingDuration.innerHTML=value;
+	remainingDuration.innerHTML=convertTime(value);
 });
