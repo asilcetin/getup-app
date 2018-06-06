@@ -177,7 +177,9 @@ const store = new Store({
     // 25mins is the default cycle
 	defaultTimeLeft: 1500,
     // 5mins is the default break time
-	defaultBreakTime: 300
+	defaultBreakTime: 300,
+  allowNotifications: true,
+  allowSounds: true
   }	
 });
 
@@ -416,6 +418,23 @@ ipcMain.on('saveSettings', function (event, defaultTimeLeft) {
 ipcMain.on('timerQuit', function (event) {
 	app.quit();
 })
+
+ipcMain.on('getSettings', function (event) {
+  // ipcMain.send('notificationsAllowed');
+  window.webContents.send('notificationsCHeckbox_fromJson', store.get('allowNotifications'));
+  window.webContents.send('soundsCheckbox_fromJson', store.get('allowSounds'));
+
+  // ipcMain.send('soundsAllowed');
+})
+
+ipcMain.on('saveNotificationsChekbox', function (event, value) {
+  store.set('allowNotifications', value);
+})
+
+ipcMain.on('saveSoundsChekbox', function (event, value) {
+  store.set('allowSounds', value);
+})
+
 
 
 /* Currently not used

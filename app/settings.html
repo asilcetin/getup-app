@@ -20,12 +20,12 @@
 				<h2></h2>
 				<div class="form-check">
 					<label>
-						<input type="checkbox" name="notificationsCheck"  onclick="handleNotificationsSettings()" id="notificationsCheck" checked> <span class="label-text">Allow Notifications</span>
+						<input type="checkbox" name="notificationsCheck"  onclick="handleNotificationsSettings()" id="notificationsCheck"> <span class="label-text">Allow Notifications</span>
 					</label>
 				</div>
 				<div class="form-check">
 					<label>
-						<input type="checkbox" name="soundsCheck" id="sounds" checked> <span class="label-text">Sounds</span>
+						<input type="checkbox" name="soundsCheck" id="sounds"> <span class="label-text">Sounds</span>
 					</label>
 				</div>
 				<div class="form-check">
@@ -68,28 +68,4 @@
 		require("../app/js/renderer_settings.js");
 		require("../app/js/renderer_popup.js");
 	</script>
-<script>
-	
-function handleNotificationsSettings(){
-    var checkbox = document.getElementById('notificationsCheck');
-    var work_notification = document.getElementById('work_notification');
-    var break_notification = document.getElementById('break_notification');
-    var work_notification_text = document.getElementById('work_notification_text');
-    var break_notification_text = document.getElementById('break_notification_text');
-
-
-	if (checkbox.checked != true) {
-  		work_notification.disabled = true;
-  		break_notification.disabled = true;
-  		work_notification_text.style.color = 'gray';
-  		break_notification_text.style.color = 'gray';
-	} else {
-  		work_notification.disabled = false;
-  		break_notification.disabled = false;
-  		work_notification_text.style.color = 'black';
-  		break_notification_text.style.color = 'black';
-	}
-}
-
-</script>
 </html>
