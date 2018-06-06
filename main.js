@@ -158,9 +158,9 @@ function showPopup(type, dissolve) {
   const position = getPopupPosition()
   popup.setPosition(position.x, position.y, false)
   if (type == 'work') {
-	  popup.webContents.send('popupMessage', {popup:'Back to work!'});
+	  popup.webContents.send('popupMessage', {popup: store.get('workNotification')});
   } else if (type == 'break') {
-	  popup.webContents.send('popupMessage', {popup:'Have a break!'});
+	  popup.webContents.send('popupMessage', {popup: store.get('breakNotification')});
   }
   popup.showInactive()
   if (dissolve) {
@@ -179,7 +179,9 @@ const store = new Store({
     // 5mins is the default break time
 	defaultBreakTime: 300,
   allowNotifications: true,
-  allowSounds: true
+  allowSounds: true,
+  breakNotification: 'Have a break!',
+  workNotification: 'Back to work!'
   }	
 });
 
@@ -420,11 +422,10 @@ ipcMain.on('timerQuit', function (event) {
 })
 
 ipcMain.on('getSettings', function (event) {
-  // ipcMain.send('notificationsAllowed');
   window.webContents.send('notificationsCHeckbox_fromJson', store.get('allowNotifications'));
   window.webContents.send('soundsCheckbox_fromJson', store.get('allowSounds'));
-
-  // ipcMain.send('soundsAllowed');
+  window.webContents.send('breakNotification_fromJson', store.get('breakNotification'));
+  window.webContents.send('workNotification_fromJson', store.get('workNotification'));
 })
 
 ipcMain.on('saveNotificationsChekbox', function (event, value) {
@@ -435,6 +436,13 @@ ipcMain.on('saveSoundsChekbox', function (event, value) {
   store.set('allowSounds', value);
 })
 
+ipcMain.on('saveCustomWorkNotification', function (event, value) {
+  store.set('workNotification', value);
+})
+
+ipcMain.on('saveCustomBreakNotification', function (event, value) {
+  store.set('breakNotification', value);
+})
 
 
 /* Currently not used
