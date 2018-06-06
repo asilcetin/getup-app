@@ -11,6 +11,16 @@ body
 	background: white;
 }
 
+#stats_canvas
+{
+	margin-top: 50px;
+}
+
+#quit .icon
+{
+	color: red;
+}
+
 a:hover
 {
 	cursor: pointer;

@@ -48,7 +48,7 @@ function createWindow() {
   }))
 
   // Open the DevTools.
-  // window.webContents.openDevTools()
+  window.webContents.openDevTools()
   
   // Hide the window when it loses focus
   window.on('blur', () => {
@@ -299,7 +299,7 @@ var doWork = function() {
 		setTimeLeft(defaultTimeLeft)
 		updateTray(breakTime, 'breakicon')
 		//Update the stats with +1 cycle
-		saveCycleData()
+		logCycle();
 		showPopup('break', true)
 	}
 	//Break cycle hits zero and work should start
@@ -325,8 +325,6 @@ var doWork = function() {
 			window.webContents.send('timeUpdate', timeLeft);
 		}
 	}
-	//Send data to the renderer
-	createStats();	
 };
 
 // Define what to do if something goes wrong
@@ -359,6 +357,7 @@ function(event)
 {
 	//Increase exercise time by 1 minute
 	defaultBreakTime+=60;
+	store.set('defaultBreakTime', defaultBreakTime);
 	window.webContents.send('exercise', defaultBreakTime);
 });
 
@@ -367,6 +366,7 @@ function(event)
 {
 	//Decrease exercise time by 1 minute
 	defaultBreakTime-=60;
+	store.set('defaultBreakTime', defaultBreakTime);
 	window.webContents.send('exercise', defaultBreakTime);
 });
 
@@ -375,6 +375,7 @@ function(event)
 {
 	//Increase work time by 1 minute
 	defaultTimeLeft+=60;
+	store.set('defaultTimeLeft', defaultTimeLeft);
 	window.webContents.send('work', defaultTimeLeft);
 }); 
 
@@ -383,12 +384,14 @@ function(event)
 {
 	//Increase work time by 1 minute
 	defaultTimeLeft-=60;
+	store.set('defaultTimeLeft', defaultTimeLeft);
 	window.webContents.send('work', defaultTimeLeft);
 });  
  
 ipcMain.on('timerPause', function (event) {
   if(timeFlow) {
   	ticker.stop();
+	logPause();
   	console.log('Timer paused.');
   } else {
 	console.log('Timer is already off.');
@@ -398,6 +401,7 @@ ipcMain.on('timerPause', function (event) {
 ipcMain.on('timerResume', function (event) {
   if(!timeFlow) {
   	ticker.start();
+	logStart();
   	console.log('Timer resumed.');
   } else {
 	console.log('Timer is already on.');
@@ -408,13 +412,8 @@ ipcMain.on('timerStop', function (event) {
 	ticker.stop();
 	initializeDefaults();
 	updateTray(timeLeft)
+	logStop();
 	console.log('Timer stopped.');
-})
-
-ipcMain.on('saveSettings', function (event, defaultTimeLeft) {
-	defaultTimeLeft = defaultTimeLeft * 60;
-	store.set('defaultTimeLeft', defaultTimeLeft);
-	console.log('Work time setting is set to ' + defaultTimeLeft + ' seconds');
 })
 
 ipcMain.on('timerQuit', function (event) {
@@ -458,29 +457,99 @@ ipcMain.on('show-window', () => {
  *
  */
  
-//Save cycle data for this day
-function saveCycleData() {
-	var todaysDate = new Date();
-	var todaysDate = todaysDate.getFullYear()+'-'+(todaysDate.getMonth()+1)+'-'+todaysDate.getDate();
-	totalCyclesToday = store.get('cycles['+todaysDate+']');
-	if (!totalCyclesToday) { totalCyclesToday = 0; }
-	store.set('cycles['+todaysDate+']', totalCyclesToday+1);
+//Var used to check if today has been initialized or not
+var newDay=true;
+//Only generate today's date once
+var today=new Date();
+today=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+//Store the length of the arrays and the cycle count so we don't have to check every time
+//Saves us the file lookup
+var statObj=
+{
+	totalCycles: 0,
+	detailedLog:
+	{
+		startTimes: [],
+		stopTimes: [],
+		pauseTimes: []
+	}
 }
 
-//Send cycle data for this day
-function sendCycleData() {
-	var todaysDate = new Date();
-	var todaysDate = todaysDate.getFullYear()+'-'+(todaysDate.getMonth()+1)+'-'+todaysDate.getDate();
-	totalCyclesToday = store.get('cycles['+todaysDate+']');
-	if (!totalCyclesToday) { totalCyclesToday = 0; }
-	window.webContents.send('totalCyclesToday', {cycles:totalCyclesToday});
+//Initialize the day
+function initDay()
+{
+	//Check if today's date exists
+	var stats=store.get('stats['+today+']');
+	if(stats===undefined)
+		store.set('stats['+today+']', statObj);
+	else
+	{
+		//If it's not a new day, it's a new start so we need to retrieve some dataž
+		statObj=stats;
+	}
+	newDay=false;
 }
 
-function createStats() {
-	//Send the stats to the renderer on initializing
-	sendCycleData();
+//Log a new cycle
+function logCycle()
+{
+	if(newDay)
+		initDay();
+	store.set('stats['+today+'].totalCycles',++statObj.totalCycles);
 }
 
+//Log a new start time
+function logStart()
+{
+	if(newDay)
+		initDay();
+	statObj.detailedLog.startTimes=statObj.detailedLog.startTimes.concat([Date.now()]);
+	store.set('stats['+today+']',statObj);
+}
+
+//Log a new stop time
+function logStop()
+{
+	if(newDay)
+		initDay();
+	statObj.detailedLog.stopTimes=statObj.detailedLog.stopTimes.concat([Date.now()]);
+	store.set('stats['+today+']',statObj);
+}
+
+//Log a new pause time
+function logPause()
+{
+	if(newDay)
+		initDay();
+	statObj.detailedLog.pauseTimes=statObj.detailedLog.pauseTimes.concat([Date.now()]);
+	store.set('stats['+today+']',statObj);
+}
+
+ipcMain.on('loadChart',
+function(event)
+{
+	var data=new Array();
+	var labels=new Array();
+	//Showing data for the last 7 days
+	for(var i=0;i<7;i++)
+	{
+		//Get current Date
+		var day=new Date();
+		//Get UTC timestamp and decrement by i days (24 hours*60 minutes*60seconds*1000 milis)
+		day=day.getTime()-(i*24*60*60*1000);
+		//Generate new day from UTC timestamp
+		day=new Date(day);
+		//Get yyyy-MM-dd format from the day
+		day=day.getFullYear()+'-'+(day.getMonth()+1)+'-'+day.getDate();
+		labels[i]=day;
+		var daystore=store.get('stats['+day+']');
+		if(daystore!=undefined)
+			data[i]=store.get('stats['+day+']').totalCycles;
+		else
+			data[i]=0;
+	}
+	window.webContents.send('chartData', {data: data, labels: labels});
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {

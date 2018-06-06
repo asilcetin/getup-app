@@ -8,6 +8,37 @@ const remote = require('electron').remote;
 const app = remote.app;
 var appPath = app.getAppPath();
 const btnQuit = document.getElementById("quit");
+//For charts
+require("../js/Chart.bundle.js");
+//Canvas
+var ctx=document.getElementById("stats_canvas").getContext("2d");
+//Var to display chart data
+var data=0;
+var labels=0;
+//Request data to display in chart
+ipcRenderer.send('loadChart');
+
+ipcRenderer.on('chartData', 
+function (event, object)
+{
+	data=object.data;
+	labels=object.labels;
+	//Generate chart
+	var myChart = new Chart(ctx, {
+		type: 'bar',
+		data: {
+        labels: labels,
+        datasets: 
+		[
+		{
+			data: data,
+            label: '# of cycles',
+			backgroundColor: "rgb(16,178,0)"
+        }
+		]
+    }
+	});
+});
 
 btnQuit.addEventListener('click', function (event) {
 	console.log("Pressed quit!");
