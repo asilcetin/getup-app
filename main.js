@@ -253,7 +253,7 @@ function setBreak(flag) {
  * @param {int} seconds  Amount of time to be displayed
  */
 function updateTray(seconds, icon) {
-	timeDisplay = convertTime(seconds).toString()
+	timeDisplay = "  " + convertTime(seconds).toString()
 	tray.setTitle(timeDisplay)
 	if (icon == 'breakicon') {
 		tray.setImage(path.join(__dirname, 'app/icons/break_iconTemplate.png'))
