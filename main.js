@@ -20,7 +20,7 @@ let popup
 // Create the tray
 function createTray() {
   tray = new Tray(path.join(__dirname, 'app/icons/work_iconTemplate.png'))
-  timeDisplay = " " + convertTime(defaultTimeLeft).toString()
+  timeDisplay = "  " + convertTime(defaultTimeLeft).toString()
   tray.setTitle(timeDisplay)
   tray.on('click', function (event) {
     toggleWindow()
@@ -48,7 +48,7 @@ function createWindow() {
   }))
 
   // Open the DevTools.
-  window.webContents.openDevTools()
+  // window.webContents.openDevTools()
   
   // Hide the window when it loses focus
   window.on('blur', () => {
@@ -300,14 +300,18 @@ var doWork = function() {
 		updateTray(breakTime, 'breakicon')
 		//Update the stats with +1 cycle
 		logCycle();
-		showPopup('break', true)
+    if (store.get('allowNotifications') == true) {
+      showPopup('break', true)
+    }
 	}
 	//Break cycle hits zero and work should start
 	else if (breakCycle && breakTime == 0) {
 		setBreak(false)
 		setBreakTime(defaultBreakTime)
 		updateTray(timeLeft, 'workicon')
-		showPopup('work', true)
+    if (store.get('allowNotifications') == true) {
+      showPopup('work', true)
+    }
 	}
 	//Inside the break cycle
 	else if (breakCycle) {
