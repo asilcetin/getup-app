@@ -88,7 +88,7 @@ function getWindowPosition() {
   // We'll be careful to make sure the window isn't outside the screen
   x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2))
   //Subtract this difference from x to adjust x by how much the window is outside of the screen
-  x-=x+windowBounds.width-workAreaSize.width;
+  if(x+windowBounds.width>workAreaSize.width) x-=x+windowBounds.width-workAreaSize.width;
 
   // Position window 4 pixels vertically below the tray icon
 	if(trayBounds.y<workAreaSize.height/2) //If we're in the upper half of the screen
