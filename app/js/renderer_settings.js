@@ -7,7 +7,6 @@ const {ipcRenderer} = require('electron')
 const remote = require('electron').remote;
 const app = remote.app;
 var appPath = app.getAppPath();
-const btnQuit = document.getElementById("quit");
 
 const sounds_checkbox = document.getElementById('sounds');
 const notificationsCheckbox = document.getElementById('notificationsCheck');
@@ -90,8 +89,3 @@ sounds_checkbox.addEventListener( 'change', function() {
 
     }
 });
-
-btnQuit.addEventListener('click', function (event) {
-    console.log("Pressed quit!");
-    ipcRenderer.send('timerQuit');
-})

@@ -10,11 +10,6 @@ const workDuration = document.getElementById("workDuration");
 const btnStop = document.getElementById("stop");
 const btnPlayPause = document.getElementById("playPause");
 
-const btnQuit = document.getElementById("quit");
-const btnStats = document.getElementById("stats");
-const btnSettings = document.getElementById("settings");
-const btnHome = document.getElementById("home");
-
 const btnExerciseUp = document.getElementById("exerciseUp");
 const btnExerciseDown = document.getElementById("exerciseDown");
 
@@ -87,25 +82,6 @@ btnWorkUp.addEventListener('click', function (event)
 btnWorkDown.addEventListener('click', function (event)
 {
 	ipcRenderer.send("workDown");
-});
-
-btnQuit.addEventListener('click', function (event) {
-	console.log("Pressed quit!");
-	ipcRenderer.send('timerQuit');
-});
-
-
-btnSettings.addEventListener('click', function (event) {
-	window.location = "settings.html";
-});
-
-btnHome.addEventListener('click', function (event) {
-	window.location = "index.html";
-});
-
-btnStats.addEventListener('click', function (event)
-{
-	window.location="stats.html";
 });
 
 //Functions from main telling us stuff

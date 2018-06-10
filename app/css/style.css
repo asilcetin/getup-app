@@ -54,6 +54,11 @@ a:hover
 	background-color: white;
 }
 
+.hidden
+{
+	display: none;
+}
+
 .navigation a
 {
 	display: block;

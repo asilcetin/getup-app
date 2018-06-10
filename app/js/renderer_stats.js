@@ -7,7 +7,6 @@ const {ipcRenderer} = require('electron')
 const remote = require('electron').remote;
 const app = remote.app;
 var appPath = app.getAppPath();
-const btnQuit = document.getElementById("quit");
 //For charts
 require("../js/Chart.bundle.js");
 //Canvas
@@ -39,8 +38,3 @@ function (event, object)
     }
 	});
 });
-
-btnQuit.addEventListener('click', function (event) {
-	console.log("Pressed quit!");
-  ipcRenderer.send('timerQuit');
-})
