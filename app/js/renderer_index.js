@@ -91,37 +91,42 @@ btnWorkDown.addEventListener('click', function (event)
 
 btnQuit.addEventListener('click', function (event) {
 	console.log("Pressed quit!");
-  ipcRenderer.send('timerQuit');
-})
+	ipcRenderer.send('timerQuit');
+});
 
 
 btnSettings.addEventListener('click', function (event) {
-  window.location = "settings.html";
-})
+	window.location = "settings.html";
+});
 
 btnHome.addEventListener('click', function (event) {
-  window.location = "index.html";
-})
+	window.location = "index.html";
+});
+
+btnStats.addEventListener('click', function (event)
+{
+	window.location="stats.html";
+});
 
 //Functions from main telling us stuff
 
 ipcRenderer.on('work', 
 function (event, value)
 {
-	workDuration.innerHTML=toMinutes(value);
+	workDuration.innerHTML=convertTime(value);
 });
 
 ipcRenderer.on('exercise', 
 function (event, value)
 {
-	exerciseDuration.innerHTML=toMinutes(value);
+	exerciseDuration.innerHTML=convertTime(value);
 });
 
 ipcRenderer.on('init', 
 function (event, object)
 {
-	workDuration.innerHTML=toMinutes(object.workDuration);
-	exerciseDuration.innerHTML=toMinutes(object.exerciseDuration);
+	workDuration.innerHTML=convertTime(object.workDuration);
+	exerciseDuration.innerHTML=convertTime(object.exerciseDuration);
 	remainingDuration.innerHTML=convertTime(object.remainingDuration);
 }
 );
