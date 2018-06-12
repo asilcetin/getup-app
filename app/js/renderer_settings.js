@@ -16,6 +16,7 @@ var work_notification_text = document.getElementById('work_notification_text');
 var break_notification_text = document.getElementById('break_notification_text');
 var break_notification = document.getElementById('break_notification');
 var work_notification = document.getElementById('work_notification');
+var google = document.getElementById("google-button");
 
 work_notification.onkeyup = function(){
     // document.getElementById('printchatbox').innerHTML = inputBox.value;
@@ -29,6 +30,12 @@ break_notification.onkeyup = function(){
       ipcRenderer.send('saveCustomBreakNotification', break_notification.value);
     }
 }
+
+//For Google auth
+google.addEventListener('click', function (event) {
+	ipcRenderer.send('google-Oauth');
+});
+
 
 ipcRenderer.send('getSettings');
 

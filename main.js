@@ -572,5 +572,36 @@ app.on('activate', function () {
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+//Google Oauth stuff
+//Google API
+const {google}=require('googleapis');
+//Application clientID and Secret
+const clientID="387051979739-move84qcjpbu0h7duob5ik4e7ahoe5eh.apps.googleusercontent.com";
+const clientSecret="1NyV39SkejkUNa3RM2qIv8Ai";
+const scopes=["https://www.googleapis.com/auth/calendar"];
+
+const electronGoogleOauth = require('electron-google-oauth');
+
+const browserWindowParams=
+{
+	useContentSize: true,
+	skipTaskbar: true,
+	autoHideMenuBar: true,
+	center: true,
+	show: true,
+	resizable: false,
+	webPreferences:
+	{
+		'node-integration':false
+	}
+};
+
+ipcMain.on('google-Oauth', 
+function(event)
+{
+	const googleOauth=electronGoogleOauth(browserWindowParams);
+	googleOauth.getAccessToken(scopes,clientID,clientSecret).then((result)=>{console.log('result',result);});
+});
+
+
+

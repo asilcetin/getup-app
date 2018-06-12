@@ -19,7 +19,6 @@ function showWindow(windowName)
 }
 
 btnQuit.addEventListener('click', function (event) {
-	console.log("Pressed quit!");
 	ipcRenderer.send('timerQuit');
 });
 

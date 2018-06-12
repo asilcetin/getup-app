@@ -23,5 +23,8 @@
       }
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "electron-google-oauth": "^2.0.0",
+    "googleapis": "^32.0.0"
+  }
 }
