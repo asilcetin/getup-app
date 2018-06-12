@@ -395,7 +395,6 @@ function(event)
 ipcMain.on('timerPause', function (event) {
   if(timeFlow) {
   	ticker.stop();
-	logPause();
   	console.log('Timer paused.');
   } else {
 	console.log('Timer is already off.');
@@ -405,7 +404,6 @@ ipcMain.on('timerPause', function (event) {
 ipcMain.on('timerResume', function (event) {
   if(!timeFlow) {
   	ticker.start();
-	logStart();
   	console.log('Timer resumed.');
   } else {
 	console.log('Timer is already on.');
@@ -416,7 +414,6 @@ ipcMain.on('timerStop', function (event) {
 	ticker.stop();
 	initializeDefaults();
 	updateTray(timeLeft)
-	logStop();
 	console.log('Timer stopped.');
 })
 
@@ -471,12 +468,6 @@ today=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 var statObj=
 {
 	totalCycles: 0,
-	detailedLog:
-	{
-		startTimes: [],
-		stopTimes: [],
-		pauseTimes: []
-	}
 }
 
 //Initialize the day
@@ -500,33 +491,6 @@ function logCycle()
 	if(newDay)
 		initDay();
 	store.set('stats['+today+'].totalCycles',++statObj.totalCycles);
-}
-
-//Log a new start time
-function logStart()
-{
-	if(newDay)
-		initDay();
-	statObj.detailedLog.startTimes=statObj.detailedLog.startTimes.concat([Date.now()]);
-	store.set('stats['+today+']',statObj);
-}
-
-//Log a new stop time
-function logStop()
-{
-	if(newDay)
-		initDay();
-	statObj.detailedLog.stopTimes=statObj.detailedLog.stopTimes.concat([Date.now()]);
-	store.set('stats['+today+']',statObj);
-}
-
-//Log a new pause time
-function logPause()
-{
-	if(newDay)
-		initDay();
-	statObj.detailedLog.pauseTimes=statObj.detailedLog.pauseTimes.concat([Date.now()]);
-	store.set('stats['+today+']',statObj);
 }
 
 ipcMain.on('loadChart',
@@ -599,8 +563,17 @@ const browserWindowParams=
 ipcMain.on('google-Oauth', 
 function(event)
 {
+	//Create the window
 	const googleOauth=electronGoogleOauth(browserWindowParams);
-	googleOauth.getAccessToken(scopes,clientID,clientSecret).then((result)=>{console.log('result',result);});
+	//Get the access token
+	googleOauth.getAccessToken(scopes,clientID,clientSecret).then(
+		(result)=>{
+			console.log('result',result);
+			//Hide the login button and text from the settings
+			window.webContents.send('hideLogin');
+			}
+		);
+	
 });
 
 

@@ -33,4 +33,6 @@ btnHome.addEventListener('click', function (event) {
 btnStats.addEventListener('click', function (event)
 {
 	 showWindow("statsWindow");
+	 //We need to reload the chart when we focus on this window to display accurate chart info. 
+	 ipcRenderer.send('loadChart');
 });

@@ -14,9 +14,9 @@ var ctx=document.getElementById("stats_canvas").getContext("2d");
 //Var to display chart data
 var data=0;
 var labels=0;
-//Request data to display in chart
-ipcRenderer.send('loadChart');
 
+
+//Display data received from backend in the chart
 ipcRenderer.on('chartData', 
 function (event, object)
 {

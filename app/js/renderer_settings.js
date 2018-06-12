@@ -36,6 +36,19 @@ google.addEventListener('click', function (event) {
 	ipcRenderer.send('google-Oauth');
 });
 
+ipcRenderer.on('hideLogin', 
+function(event)
+{
+	document.getElementById("google-button").classList.add("hidden");
+	document.getElementsByClassName("login")[0].classList.add("hidden");
+});
+
+ipcRenderer.on('showLogin',
+function(event)
+{
+	document.getElementById("google-button").classList.remove("hidden");
+	document.getElementsByClassName("login")[0].classList.remove("hidden");
+});
 
 ipcRenderer.send('getSettings');
 
