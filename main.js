@@ -551,7 +551,8 @@ const oAuth2Client=new google.auth.OAuth2(clientID,clientSecret,"urn:ietf:wg:oau
 const scopes=["https://www.googleapis.com/auth/calendar"];
 //Checked for google features being enabled
 var gFeatures=false;
-
+//The name we will always use for our calendar
+var appCalendarName="getuppAppActivityCalendar";
 
 //Electron Google OAuth window stuff
 const electronGoogleOauth = require('electron-google-oauth');
@@ -583,7 +584,9 @@ function readTokenFromFile()
 		//Hide the login button
 		window.webContents.send('hideLogin');
 		//Run test
-		listEvents(oAuth2Client);
+		//listEvents(oAuth2Client);
+		//Just as a test I'll run checkCalendar here
+		checkCalendar(oAuth2Client);
 	}
 }
 //Writes the token to the file
@@ -613,11 +616,59 @@ function(event)
 			//store.set('OAuth2Token', result);
 			//Enable Google features
 			gFeatures=true;
-			//Run test
-			listEvents(oAuth2Client);
 			}
 		);				
 });
+
+function checkCalendar(auth)
+{
+	const calendar=google.calendar({version: 'v3', auth});
+	calendar.calendarList.list({
+		maxResults:100
+		},(err,{data})=>{
+			if(err) return console.log("Failed to retrieve calendar list due to error: " + err);
+			const calendars=data.items;
+			if(calendars.length)
+			{
+				console.log("Retrieved " + calendars.length + " calendars");
+				//Go through the calendars
+				var found=false;
+				console.log("Checking calendar names...")
+				for(var i=0;i<calendars.length;i++)
+				{
+					console.log(calendars[i].id);
+					if(calendars[i].summary==appCalendarName)
+					{
+						found=true;
+						break;
+					}
+				}
+				//If we haven't found our calendar, we must crate one
+				if(!found)
+				{
+					console.log("App calendar not found! Creating...");
+					calendar.calendars.insert({
+						resource: {summary: appCalendarName}
+						},(err,{data})=>{
+							if(err) return console.log("Failed to create new calendar due to error: " + err);
+							console.log("Created new calendar!");
+						});
+				}
+			}
+			else
+			{
+				console.log("No calendars retrieved!");
+				console.log("Creating app calendar...")
+				calendar.calendars.insert({
+						resource: {summary: appCalendarName}
+						},(err,{data})=>{
+							if(err) return console.log("Failed to create new calendar due to error: " + err);
+							console.log("Created new calendar!");
+						});
+			}
+				
+		});
+}
 
 function listEvents(auth) {
   const calendar = google.calendar({version: 'v3', auth});

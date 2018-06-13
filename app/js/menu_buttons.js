@@ -6,7 +6,7 @@ const btnHome = document.getElementById("home");
 const {ipcRenderer} = require('electron')
 
 //Shows named class window and hides others. No flashing since everything is already loaded
-function showWindow(windowName)
+function showWindow(windowName, iconName)
 {
 	var windows=document.getElementsByClassName("window");
 	for(var i=0;i<windows.length;i++)
@@ -16,6 +16,14 @@ function showWindow(windowName)
 		else
 			windows[i].classList.add("hidden");
 	}
+	var icons=document.getElementsByClassName("icon")
+	for(var i=0;i<icons.length;i++)
+	{
+		if(icons[i].classList.contains(iconName))
+			icons[i].classList.add("icon_active");
+		else
+			icons[i].classList.remove("icon_active");
+	}
 }
 
 btnQuit.addEventListener('click', function (event) {
@@ -23,16 +31,16 @@ btnQuit.addEventListener('click', function (event) {
 });
 
 btnSettings.addEventListener('click', function (event) {
-	 showWindow("settingsWindow");
+	 showWindow("settingsWindow", "settingsIcon");
 });
 
 btnHome.addEventListener('click', function (event) {
-	 showWindow("homeWindow")
+	 showWindow("homeWindow","homeIcon")
 });
 
 btnStats.addEventListener('click', function (event)
 {
-	 showWindow("statsWindow");
+	 showWindow("statsWindow","statsIcon");
 	 //We need to reload the chart when we focus on this window to display accurate chart info. 
 	 ipcRenderer.send('loadChart');
 });

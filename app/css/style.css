@@ -83,12 +83,7 @@ a:hover
 
 .icon_active 
 {
-	font-variant: normal;
-    text-transform: none;
-	font-family: "fontello";
-	font-style: normal;
-	font-size: 2em;
-	color: gray;
+	color: gray !important;
 }
 
 .exerciseIcon
