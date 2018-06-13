@@ -231,3 +231,17 @@ input[type="checkbox"]:disabled + .label-text:before{
 {
 	color: orange !important;
 }
+
+.notification_image {
+	width: 20px;
+  	float:left;
+  	margin-right:5px;
+  	margin-left:15px;
+  	margin-top:20px; 
+}
+
+.popupMessage {
+	float:left;
+  	margin-top: -20px;
+  	margin-left:40px;
+}

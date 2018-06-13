@@ -160,9 +160,9 @@ function showPopup(type, dissolve) {
   const position = getPopupPosition()
   popup.setPosition(position.x, position.y, false)
   if (type == 'work') {
-	  popup.webContents.send('popupMessage', {popup: store.get('workNotification')});
+	  popup.webContents.send('popupMessage', {popup: store.get('workNotification')}, type);
   } else if (type == 'break') {
-	  popup.webContents.send('popupMessage', {popup: store.get('breakNotification')});
+	  popup.webContents.send('popupMessage', {popup: store.get('breakNotification')}, type);
   }
   popup.showInactive()
   if (dissolve) {
