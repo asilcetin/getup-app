@@ -55,7 +55,9 @@ function createWindow() {
     if (!window.webContents.isDevToolsOpened()) {
       window.hide()
     }
-  })
+  });
+  //We want to do this when the web stuff loads so we can hide the login button
+	window.once('ready-to-show', readTokenFromFile);
 }
 
 function toggleWindow() {
@@ -418,6 +420,9 @@ ipcMain.on('timerStop', function (event) {
 })
 
 ipcMain.on('timerQuit', function (event) {
+	//Write the token to file before quitting
+	writeTokenToFile();
+	//Now you can quit!
 	app.quit();
 })
 
@@ -467,7 +472,7 @@ today=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 //Saves us the file lookup
 var statObj=
 {
-	totalCycles: 0,
+	totalCycles: 0
 }
 
 //Initialize the day
@@ -542,8 +547,13 @@ const {google}=require('googleapis');
 //Application clientID and Secret
 const clientID="387051979739-move84qcjpbu0h7duob5ik4e7ahoe5eh.apps.googleusercontent.com";
 const clientSecret="1NyV39SkejkUNa3RM2qIv8Ai";
+const oAuth2Client=new google.auth.OAuth2(clientID,clientSecret,"urn:ietf:wg:oauth:2.0:oob");
 const scopes=["https://www.googleapis.com/auth/calendar"];
+//Checked for google features being enabled
+var gFeatures=false;
 
+
+//Electron Google OAuth window stuff
 const electronGoogleOauth = require('electron-google-oauth');
 
 const browserWindowParams=
@@ -560,6 +570,31 @@ const browserWindowParams=
 	}
 };
 
+//Read the token from the file
+function readTokenFromFile()
+{
+	var token=store.get('OAuth2Token');
+	if (token!=undefined)
+	{
+		//Parse the token JSON and set the credentials
+		oAuth2Client.setCredentials(token);
+		//Enable google features
+		gFeatures=true;
+		//Hide the login button
+		window.webContents.send('hideLogin');
+		//Run test
+		listEvents(oAuth2Client);
+	}
+}
+//Writes the token to the file
+function writeTokenToFile()
+{
+	console.log("Write Token to File!");
+	if(gFeatures)
+		store.set('OAuth2Token', oAuth2Client.credentials);
+}
+
+//This happens when the Google Login button is pressed
 ipcMain.on('google-Oauth', 
 function(event)
 {
@@ -571,10 +606,32 @@ function(event)
 			console.log('result',result);
 			//Hide the login button and text from the settings
 			window.webContents.send('hideLogin');
+			//Set the current client credentials
+			oAuth2Client.setCredentials(result);
+			//Save the token to file
+			writeTokenToFile();
+			//store.set('OAuth2Token', result);
+			//Enable Google features
+			gFeatures=true;
+			//Run test
+			listEvents(oAuth2Client);
 			}
-		);
-	
+		);				
 });
 
-
+function listEvents(auth) {
+  const calendar = google.calendar({version: 'v3', auth});
+  calendar.calendarList.list({
+    maxResults: 10,
+  }, (err, {data}) => {
+    if (err) return console.log('The API returned an error: ' + err);
+    const calendars = data.items;
+    if (calendars.length) {
+      console.log('Available calendars:');
+	  console.log(calendars);
+    } else {
+      console.log('No upcoming events found.');
+    }
+  });
+}
 
