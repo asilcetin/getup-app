@@ -483,6 +483,7 @@ ipcMain.on('timerStop', function (event) {
 	ticker.stop();
 	initializeDefaults();
 	updateTray(timeLeft);
+	window.webContents.send('timeUpdate', timeLeft);
 	//Set the break and work cycles as having been stopped
 	if(breakCycle)
 	{
