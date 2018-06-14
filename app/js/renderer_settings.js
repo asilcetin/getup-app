@@ -64,6 +64,8 @@ function(event)
 
 ipcRenderer.on('enableCalendarCheckbox', function (event){
 	calendarCheckbox.disabled=false;
+	//Check the box by default
+	calendarCheckbox.checked=true;
 });
 
 ipcRenderer.on('disableCalendarCheckbox', function(event){

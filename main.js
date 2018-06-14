@@ -480,21 +480,24 @@ ipcMain.on('timerResume', function (event) {
 })
 
 ipcMain.on('timerStop', function (event) {
+	//Set the break and work cycles as having been stopped, but only if they hadn't already been (timeFlow=true)
+	if(timeFlow)
+	{
+		if(breakCycle)
+		{
+			breakStopTime=new Date();
+			insertEvent(appCalendarId, breakStartTime, breakStopTime, "Break cycle stopped by user", oAuth2Client);
+		}
+		else
+		{
+			workStopTime=new Date();
+			insertEvent(appCalendarId, workStartTime, workStopTime, "Work cycle stopped by user", oAuth2Client);
+		}
+	}
 	ticker.stop();
 	initializeDefaults();
 	updateTray(timeLeft);
 	window.webContents.send('timeUpdate', timeLeft);
-	//Set the break and work cycles as having been stopped
-	if(breakCycle)
-	{
-		breakStopTime=new Date();
-		insertEvent(appCalendarId, breakStartTime, breakStopTime, "Break cycle stopped by user", oAuth2Client);
-	}
-	else
-	{
-		workStopTime=new Date();
-		insertEvent(appCalendarId, workStartTime, workStopTime, "Work cycle stopped by user", oAuth2Client);
-	}
 	console.log('Timer stopped.');
 })
 
@@ -712,6 +715,11 @@ function(event)
 			writeTokenToFile();
 			//Enable the calendar checkbox
 			window.webContents.send('enableCalendarCheckbox');
+			//Enable gFeatures
+			gFeatures=true;
+			store.set('gFeatures', true);
+			//Check if the calendar exists, create a new one if not, get the id, all that stuff
+			checkCalendar(oAuth2Client);
 			}
 		);				
 });
