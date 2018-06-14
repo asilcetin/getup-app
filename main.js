@@ -136,7 +136,7 @@ function getPopupPosition() {
   // Center window horizontally below the tray icon
   x = Math.round(trayBounds.x + (trayBounds.width / 2) - (popupBounds.width / 2));
   //Subtract this difference from x to adjust x by how much the window is outside of the screen
-  x-=x+popupBounds.width-workAreaSize.width;
+  if(x+popupBounds.width>workAreaSize.width) x-=x+popupBounds.width-workAreaSize.width;
 
    // Position window 4 pixels vertically below the tray icon
 	if(trayBounds.y<workAreaSize.height/2) //If we're in the upper half of the screen
