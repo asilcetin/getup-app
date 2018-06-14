@@ -715,6 +715,23 @@ function(event)
 		);				
 });
 
+//This happens when the Google logout button is pressed
+ipcMain.on('google-logout',
+function(event){
+	//Disable gFeatures in the file
+	store.set('gFeatures', false);
+	//Disable google features
+	gFeatures=false;
+	//Remove the token from the file
+	store.set('OAuth2Token', undefined);
+	//Set the client credentials to undefined to erase the token 
+	oAuth2Client.setCredentials(undefined);
+	//Show the logion button
+	window.webContents.send('showLogin');
+	//Disable the calendar checkbox
+	window.webContents.send('disableCalendarCheckbox');
+});
+
 function insertEvent(calendarId, startEvent, endEvent, nameEvent, auth)
 {
 	startEvent=startEvent.toISOString();

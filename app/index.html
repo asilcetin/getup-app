@@ -4,9 +4,6 @@
 		<meta charset="UTF-8">
 		<title>GetUp</title>
 		<link rel="stylesheet" href="css/style.css">
-		<meta name="google-signin-scope" content="profile email">
-    	<!-- <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com"> -->
-    	<script src="https://apis.google.com/js/platform.js" async defer></script>
 		<!-- css and scripts for materialdesign -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
@@ -25,7 +22,6 @@
 			<div class="timers">
 				<div class="timerIcon">
 					<img class="exerciseIcon" src="icons/moving.svg" alt="exercise">
-					<!--<i class="icon exerciseIcon">&#xf1ae;</i>-->
 				</div>
 				<div class="exerciseTimer">
 					<a id="exerciseUp"><i class="icon timerArrow">&#xe804;</i></a><br/>
@@ -34,7 +30,6 @@
 				</div>
 				<div class="timerIcon">
 				<img class="workIcon" src="icons/working.svg" alt="work">
-					<!--<i class="icon workIcon">&#xe806;</i>-->
 				</div>
 				<div class="workTimer">
 					<a id="workUp"><i class="icon timerArrow">&#xe804;</i></a><br/>
@@ -74,7 +69,6 @@
 						<p id="break_notification_text">Break Notification: </p>
 						<input type="text" name="break_notification" id="break_notification"><br>
 					</div>
-					<!-- <input type="checkbox" onclick="checkFluency()"  id="fluency" checked /> -->
 				</form>
 				<div class="login">
 					<p class="login_text">In order to log your cycles to your Google Calendar you should login with your Google Account.</p>
@@ -83,6 +77,9 @@
 			</div>
 			<a id="google-button" class="btn btn-block btn-social btn-google" style="margin-left: 12%; margin-right: 12%; margin-top: 4%;">
 				<i class="fa fa-google"></i> Sign in with Google
+			</a>
+			<a id="google-button-logout" class="btn btn-block btn-social btn-google hidden" style="margin-left: 12%; margin-right: 12%; margin-top: 4%;">
+				<i class="fa fa-google"></i> Sign out
 			</a>
 		</div>
 		<div class="window statsWindow hidden">

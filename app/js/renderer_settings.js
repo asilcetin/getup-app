@@ -18,6 +18,7 @@ var break_notification_text = document.getElementById('break_notification_text')
 var break_notification = document.getElementById('break_notification');
 var work_notification = document.getElementById('work_notification');
 var google = document.getElementById("google-button");
+var logout = document.getElementById("google-button-logout");
 
 work_notification.onkeyup = function(){
     // document.getElementById('printchatbox').innerHTML = inputBox.value;
@@ -36,12 +37,20 @@ break_notification.onkeyup = function(){
 google.addEventListener('click', function (event) {
 	ipcRenderer.send('google-Oauth');
 });
+//For logout
+logout.addEventListener('click', function (event){
+	ipcRenderer.send('google-logout');
+});
+
 
 ipcRenderer.on('hideLogin', 
 function(event)
 {
+	//Hide the login button
 	document.getElementById("google-button").classList.add("hidden");
 	document.getElementsByClassName("login")[0].classList.add("hidden");
+	//Show the logout button
+	document.getElementById("google-button-logout").classList.remove("hidden");
 });
 
 ipcRenderer.on('showLogin',
@@ -49,6 +58,8 @@ function(event)
 {
 	document.getElementById("google-button").classList.remove("hidden");
 	document.getElementsByClassName("login")[0].classList.remove("hidden");
+	//Hide the logout button
+	document.getElementById("google-button-logout").classList.add("hidden");
 });
 
 ipcRenderer.on('enableCalendarCheckbox', function (event){
