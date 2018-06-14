@@ -10,6 +10,7 @@ var appPath = app.getAppPath();
 
 const sounds_checkbox = document.getElementById('sounds');
 const notificationsCheckbox = document.getElementById('notificationsCheck');
+const calendarCheckbox = document.getElementById('calendarCheckbox');
 var work_notification = document.getElementById('work_notification');
 var break_notification = document.getElementById('break_notification');
 var work_notification_text = document.getElementById('work_notification_text');
@@ -50,11 +51,19 @@ function(event)
 	document.getElementsByClassName("login")[0].classList.remove("hidden");
 });
 
+ipcRenderer.on('enableCalendarCheckbox', function (event){
+	calendarCheckbox.disabled=false;
+});
+
+ipcRenderer.on('disableCalendarCheckbox', function(event){
+	calendarCheckbox.disabled=true;
+});
+
 ipcRenderer.send('getSettings');
 
 ipcRenderer.on('soundsCheckbox_fromJson', function (event, value) {
   sounds_checkbox.checked = value;
-})
+});
 
 ipcRenderer.on('notificationsCHeckbox_fromJson', function (event, value) {
   notificationsCheckbox.checked = value;
@@ -73,15 +82,19 @@ ipcRenderer.on('notificationsCHeckbox_fromJson', function (event, value) {
       ipcRenderer.send('saveNotificationsChekbox', false);
 
     }
-})
+});
+
+ipcRenderer.on('calendarCheckbox_fromJson', function (event,value){
+	calendarCheckbox.checked = value;
+});
 
 ipcRenderer.on('breakNotification_fromJson', function (event, value) {
-  break_notification.placeholder = value;
-})
+  break_notification.value = value;
+});
 
 ipcRenderer.on('workNotification_fromJson', function (event, value) {
-  work_notification.placeholder = value;
-})
+  work_notification.value = value;
+});
 
 notificationsCheckbox.addEventListener( 'change', function() {
     if(this.checked) {
@@ -108,4 +121,12 @@ sounds_checkbox.addEventListener( 'change', function() {
       ipcRenderer.send('saveSoundsChekbox', false);
 
     }
+});
+
+calendarCheckbox.addEventListener( 'change', function(){
+	if(this.checked){
+		ipcRenderer.send('saveCalendarCheckbox', true);
+	} else {
+		ipcRenderer.send('saveCalendarCheckbox', false);
+	}
 });

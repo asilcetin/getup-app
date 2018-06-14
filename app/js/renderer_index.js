@@ -52,7 +52,7 @@ btnPlayPause.addEventListener('click', function (event) {
 	else
 	{
 		btnPlayPause.classList.toggle("runningPlayPauseControl");
-		btnPlayPause.firstChild.innerHTML="&#xe801";
+		btnPlayPause.firstChild.innerHTML="&#xe801;";
 		ipcRenderer.send('timerResume');
 	}
 })

@@ -17,6 +17,28 @@ let window
 let tray
 let popup
 
+//For logging events we'll set the start and stop times for every event 
+var breakStartTime=0;
+var breakStopTime=0;
+var workStartTime=0;
+var workStopTime=0;
+var workPauseStartTime=0;
+var workPauseStopTime=0;
+var breakPauseStartTime=0;
+var breakPauseStopTime=0;
+
+//Control variables for pauses vs stops
+var workPause=false;
+var breakPause=false;
+
+//Values for the timer itself
+var timeFlow=false;
+var breakCycle;
+var timeLeft;
+
+//The timer
+var ticker;
+
 // Create the tray
 function createTray() {
   tray = new Tray(path.join(__dirname, 'app/icons/work_iconTemplate.png'))
@@ -56,8 +78,6 @@ function createWindow() {
       window.hide()
     }
   });
-  //We want to do this when the web stuff loads so we can hide the login button
-	window.once('ready-to-show', readTokenFromFile);
 }
 
 function toggleWindow() {
@@ -195,14 +215,15 @@ function initializeDefaults() {
 	//Default break time
 	defaultBreakTime = store.get('defaultBreakTime');
 	setBreakTime(defaultBreakTime)
-	//Default cycle to start
-	setBreak(false)
+	//First cycle is the work cycle
+	setBreak(false);
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', initializeDefaults)
+app.on('ready', startTimer)
 app.on('ready', createTray)
 app.on('ready', createWindow)
 app.on('ready', createPopup)
@@ -213,7 +234,16 @@ app.on('ready', createPopup)
  *
  */
  
-var timeFlow=false;
+//Function to start the whole thing
+function startTimer()
+{
+// Create the ticker
+ticker = new AdjustingInterval(doWork, 1000, doError);
+// Start the timer
+ticker.start();
+//We have to create the work start on the first start to make sure the app starts logging properly
+workStartTime=new Date();
+}
  
 //Setter for the time left
 function setTimeLeft(seconds) {
@@ -298,6 +328,12 @@ var doWork = function() {
 	//Work cycle hits zero and break should start
 	if (timeLeft == 0 && !breakCycle) {
 		setBreak(true)
+		//Write break start time. Write work stop time. 
+		breakStartTime=new Date();
+		workStopTime=breakStartTime;
+		//If we started work before stopping it, thus have both dates
+		if(workStartTime!=0)
+			insertEvent(appCalendarId, workStartTime, workStopTime, "Work cycle", oAuth2Client);
 		setTimeLeft(defaultTimeLeft)
 		updateTray(breakTime, 'breakicon')
 		//Update the stats with +1 cycle
@@ -309,6 +345,11 @@ var doWork = function() {
 	//Break cycle hits zero and work should start
 	else if (breakCycle && breakTime == 0) {
 		setBreak(false)
+		//Write break stop time. Write work start time.
+		breakStopTime=new Date();
+		workStartTime=breakStopTime;
+		if(breakStartTime!=0)
+			insertEvent(appCalendarId, breakStartTime, breakStopTime, "Break cycle", oAuth2Client);
 		setBreakTime(defaultBreakTime)
 		updateTray(timeLeft, 'workicon')
     if (store.get('allowNotifications') == true) {
@@ -337,13 +378,6 @@ var doWork = function() {
 var doError = function() {
     console.warn('The drift exceeded the interval.');
 };
-
-// (The third argument is optional)
-var ticker = new AdjustingInterval(doWork, 1000, doError);
-
-// Start the timer on launch
-//ticker.start();
-
 
 /**
  * 
@@ -397,6 +431,17 @@ function(event)
 ipcMain.on('timerPause', function (event) {
   if(timeFlow) {
   	ticker.stop();
+	//If we were working
+	if(!breakCycle)
+	{
+		workPauseStartTime=new Date();
+		workPause=true;
+	}
+	if(breakCycle)
+	{
+		breakPauseStartTime=new Date();
+		breakPause=true;
+	}
   	console.log('Timer paused.');
   } else {
 	console.log('Timer is already off.');
@@ -406,6 +451,28 @@ ipcMain.on('timerPause', function (event) {
 ipcMain.on('timerResume', function (event) {
   if(!timeFlow) {
   	ticker.start();
+	//If we paused the timer
+	if(breakPause)
+	{
+		//A pause in our break
+		breakPauseStopTime=new Date();
+		insertEvent(appCalendarId, breakPauseStartTime, breakPauseStopTime, "Break cycle paused by user", oAuth2Client);
+		breakPause=false;
+	}
+	else if(workPause)
+	{
+		workPauseStopTime=new Date();
+		insertEvent(appCalendarId, workPauseStartTime, workPauseStopTime, "Work cycle paused by user", oAuth2Client);
+		workPause=false;
+	}
+	else
+	{
+		//If we didn't pause the timer, we stopped it so we set the start date as a new date
+		if(breakCycle)
+			breakStartTime=new Date();
+		else
+			workStartTime=new Date();
+	}
   	console.log('Timer resumed.');
   } else {
 	console.log('Timer is already on.');
@@ -415,7 +482,18 @@ ipcMain.on('timerResume', function (event) {
 ipcMain.on('timerStop', function (event) {
 	ticker.stop();
 	initializeDefaults();
-	updateTray(timeLeft)
+	updateTray(timeLeft);
+	//Set the break and work cycles as having been stopped
+	if(breakCycle)
+	{
+		breakStopTime=new Date();
+		insertEvent(appCalendarId, breakStartTime, breakStopTime, "Break cycle stopped by user", oAuth2Client);
+	}
+	else
+	{
+		workStopTime=new Date();
+		insertEvent(appCalendarId, workStartTime, workStopTime, "Work cycle stopped by user", oAuth2Client);
+	}
 	console.log('Timer stopped.');
 })
 
@@ -431,6 +509,9 @@ ipcMain.on('getSettings', function (event) {
   window.webContents.send('soundsCheckbox_fromJson', store.get('allowSounds'));
   window.webContents.send('breakNotification_fromJson', store.get('breakNotification'));
   window.webContents.send('workNotification_fromJson', store.get('workNotification'));
+  window.webContents.send('calendarCheckbox_fromJson', store.get('gFeatures'));
+  gFeatures=store.get('gFeatures');
+  readTokenFromFile();
 })
 
 ipcMain.on('saveNotificationsChekbox', function (event, value) {
@@ -553,6 +634,8 @@ const scopes=["https://www.googleapis.com/auth/calendar"];
 var gFeatures=false;
 //The name we will always use for our calendar
 var appCalendarName="getuppAppActivityCalendar";
+//The ID of the calendar we created! This must get populated on launch
+var appCalendarId=null;
 
 //Electron Google OAuth window stuff
 const electronGoogleOauth = require('electron-google-oauth');
@@ -579,21 +662,34 @@ function readTokenFromFile()
 	{
 		//Parse the token JSON and set the credentials
 		oAuth2Client.setCredentials(token);
-		//Enable google features
-		gFeatures=true;
 		//Hide the login button
 		window.webContents.send('hideLogin');
-		//Run test
-		//listEvents(oAuth2Client);
+		//Enable the calendar checkbox
+		window.webContents.send('enableCalendarCheckbox');
 		//Just as a test I'll run checkCalendar here
 		checkCalendar(oAuth2Client);
 	}
 }
+//Enables Google calendar if the tick on the settings menu is set
+ipcMain.on('saveCalendarCheckbox', function(event,data){
+	if(data==true)
+	{
+		store.set('gFeatures', true);
+		gFeatures=true;
+	}
+	else
+	{
+		store.set('gFeatures', false);
+		gFeatures=false;
+	}	
+});
+
+
 //Writes the token to the file
 function writeTokenToFile()
 {
 	console.log("Write Token to File!");
-	if(gFeatures)
+	if(oAuth2Client.credentials!=undefined)
 		store.set('OAuth2Token', oAuth2Client.credentials);
 }
 
@@ -613,15 +709,38 @@ function(event)
 			oAuth2Client.setCredentials(result);
 			//Save the token to file
 			writeTokenToFile();
-			//store.set('OAuth2Token', result);
-			//Enable Google features
-			gFeatures=true;
+			//Enable the calendar checkbox
+			window.webContents.send('enableCalendarCheckbox');
 			}
 		);				
 });
 
+function insertEvent(calendarId, startEvent, endEvent, nameEvent, auth)
+{
+	startEvent=startEvent.toISOString();
+	endEvent=endEvent.toISOString();
+	if(!gFeatures) return;
+	console.log("G features enabled! Writing event to calendar!")
+	const calendar=google.calendar({version: 'v3', auth});
+	calendar.events.insert({
+		calendarId: appCalendarId,
+		resource: {
+			start: { dateTime: startEvent },
+			end: { dateTime: endEvent },
+			summary: nameEvent
+		}
+	},(err, {data})=>{
+		if(err) return console.log("Failed to create event due to error: " + err);
+		console.log("Event " +nameEvent+" created!");
+	});
+}
+
 function checkCalendar(auth)
 {
+	//Exit if gFeatures aren't enabled. 
+	if(!gFeatures) return;
+	console.log("G features enabled! Checking calendars...");
+	//Run the whole calendar stuff. There really is a lot going on here
 	const calendar=google.calendar({version: 'v3', auth});
 	calendar.calendarList.list({
 		maxResults:100
@@ -640,6 +759,8 @@ function checkCalendar(auth)
 					if(calendars[i].summary==appCalendarName)
 					{
 						found=true;
+						console.log("Found calendar " + calendars[i].summary + " with ID " + calendars[i].id);
+						appCalendarId=calendars[i].id;
 						break;
 					}
 				}
@@ -651,7 +772,8 @@ function checkCalendar(auth)
 						resource: {summary: appCalendarName}
 						},(err,{data})=>{
 							if(err) return console.log("Failed to create new calendar due to error: " + err);
-							console.log("Created new calendar!");
+							console.log("Created new calendar with name" + data.summary + " and ID " + data.id + "!");
+							appCalendarId=data.id;
 						});
 				}
 			}
@@ -663,26 +785,11 @@ function checkCalendar(auth)
 						resource: {summary: appCalendarName}
 						},(err,{data})=>{
 							if(err) return console.log("Failed to create new calendar due to error: " + err);
-							console.log("Created new calendar!");
+							console.log("Created new calendar with name" + data.summary + " and ID " + data.id + "!");
+							appCalendarId=data.id;
 						});
 			}
 				
 		});
-}
-
-function listEvents(auth) {
-  const calendar = google.calendar({version: 'v3', auth});
-  calendar.calendarList.list({
-    maxResults: 10,
-  }, (err, {data}) => {
-    if (err) return console.log('The API returned an error: ' + err);
-    const calendars = data.items;
-    if (calendars.length) {
-      console.log('Available calendars:');
-	  console.log(calendars);
-    } else {
-      console.log('No upcoming events found.');
-    }
-  });
 }
 

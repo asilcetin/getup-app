@@ -19,7 +19,7 @@
 		
 			<div class="controls">
 				<a id="stop"><i class="icon stopControl">&#xe802;</i></a>
-				<a id="playPause"><i class="icon playPauseControl">&#xe803;</i></a>
+				<a id="playPause" class="runningPlayPauseControl"><i class="icon playPauseControl">&#xe801;</i></a>
 				<p id="remainingDuration">10:00</p>
 			</div>		
 			<div class="timers">
@@ -49,7 +49,7 @@
 					<h2></h2>
 					<div class="form-check">
 						<label>
-							<input type="checkbox" name="notificationsCheck"  onclick="handleNotificationsSettings()" id="notificationsCheck"> <span class="label-text">Allow Notifications</span>
+							<input type="checkbox" name="notificationsCheck" id="notificationsCheck"> <span class="label-text">Allow Notifications</span>
 						</label>
 					</div>
 					<div class="form-check">
@@ -59,7 +59,7 @@
 					</div>
 					<div class="form-check">
 						<label>
-							<input type="checkbox" name="calendarCheck" disabled> <span class="label-text">Log cycles to calendar</span>
+							<input type="checkbox" name="calendarCheck" id="calendarCheckbox" disabled> <span class="label-text">Log cycles to calendar</span>
 						</label>
 					</div>
 				</form>
