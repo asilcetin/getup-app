@@ -108,12 +108,19 @@ a:hover
 	color: black;
 }
 
-.workTimer, .exerciseTimer, .timerIcon
-{
-	width: 25%;
-	float: left;
-	text-align: center;
-	height: 100px;
+.workTimer, .exerciseTimer {
+  float: left;
+  text-align: center;
+  height: 100px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.timerIcon {
+  float: left;
+  text-align: center;
+  height: 100px;
+  padding-left: 25px;
 }
 
 .workTimer:after, .exerciseTimer:after, .timerIcon:after
