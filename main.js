@@ -456,13 +456,13 @@ ipcMain.on('timerResume', function (event) {
 	{
 		//A pause in our break
 		breakPauseStopTime=new Date();
-		insertEvent(appCalendarId, breakPauseStartTime, breakPauseStopTime, "Break cycle paused by user", oAuth2Client);
+		insertEvent(appCalendarId, breakPauseStartTime, breakPauseStopTime, "Paused break cycle", oAuth2Client);
 		breakPause=false;
 	}
 	else if(workPause)
 	{
 		workPauseStopTime=new Date();
-		insertEvent(appCalendarId, workPauseStartTime, workPauseStopTime, "Work cycle paused by user", oAuth2Client);
+		insertEvent(appCalendarId, workPauseStartTime, workPauseStopTime, "Paused work cycle", oAuth2Client);
 		workPause=false;
 	}
 	else
@@ -486,12 +486,12 @@ ipcMain.on('timerStop', function (event) {
 		if(breakCycle)
 		{
 			breakStopTime=new Date();
-			insertEvent(appCalendarId, breakStartTime, breakStopTime, "Break cycle stopped by user", oAuth2Client);
+			insertEvent(appCalendarId, breakStartTime, breakStopTime, "Stopped break cycle", oAuth2Client);
 		}
 		else
 		{
 			workStopTime=new Date();
-			insertEvent(appCalendarId, workStartTime, workStopTime, "Work cycle stopped by user", oAuth2Client);
+			insertEvent(appCalendarId, workStartTime, workStopTime, "Stopped work cycle", oAuth2Client);
 		}
 	}
 	ticker.stop();
@@ -580,7 +580,8 @@ function logCycle()
 {
 	if(newDay)
 		initDay();
-	store.set('stats['+today+'].totalCycles',++statObj.totalCycles);
+  statObj.totalCycles++;
+	store.set('stats['+today+']',statObj);
 }
 
 ipcMain.on('loadChart',
@@ -662,7 +663,7 @@ const browserWindowParams=
 function readTokenFromFile()
 {
 	var token=store.get('OAuth2Token');
-	if (token!=undefined)
+	if (token!=undefined && !token)
 	{
 		//Parse the token JSON and set the credentials
 		oAuth2Client.setCredentials(token);
