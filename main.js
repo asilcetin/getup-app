@@ -663,7 +663,7 @@ const browserWindowParams=
 function readTokenFromFile()
 {
 	var token=store.get('OAuth2Token');
-	if (token!=undefined && !token)
+	if (token!=undefined && token)
 	{
 		//Parse the token JSON and set the credentials
 		oAuth2Client.setCredentials(token);
