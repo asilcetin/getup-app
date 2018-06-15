@@ -70,7 +70,7 @@ function createWindow() {
   }))
 
   // Open the DevTools.
-  //window.webContents.openDevTools()
+  window.webContents.openDevTools()
   
   // Hide the window when it loses focus
   window.on('blur', () => {
@@ -404,10 +404,13 @@ function(event)
 ipcMain.on('exerciseDown', 
 function(event)
 {
-	//Decrease exercise time by 1 minute
-	defaultBreakTime-=60;
-	store.set('defaultBreakTime', defaultBreakTime);
-	window.webContents.send('exercise', defaultBreakTime);
+	//Decrease exercise time by 1 minute if 2 or more minutes 
+	if(defaultBreakTime>=120)
+	{
+		defaultBreakTime-=60;
+		store.set('defaultBreakTime', defaultBreakTime);
+		window.webContents.send('exercise', defaultBreakTime);
+	}
 });
 
 ipcMain.on('workUp', 
@@ -417,15 +420,29 @@ function(event)
 	defaultTimeLeft+=60;
 	store.set('defaultTimeLeft', defaultTimeLeft);
 	window.webContents.send('work', defaultTimeLeft);
+	if(!timeFlow && !breakCycle)
+	{
+		timeLeft+=60;
+		window.webContents.send('timeUpdate', timeLeft);
+	}
+		
 }); 
 
 ipcMain.on('workDown', 
 function(event)
 {
-	//Increase work time by 1 minute
-	defaultTimeLeft-=60;
-	store.set('defaultTimeLeft', defaultTimeLeft);
-	window.webContents.send('work', defaultTimeLeft);
+	//Decrease work time by 1 minute if 2 or more minutes
+	if(defaultTimeLeft>=120)
+	{
+		defaultTimeLeft-=60;
+		store.set('defaultTimeLeft', defaultTimeLeft);
+		window.webContents.send('work', defaultTimeLeft);
+		if(!timeFlow && !breakCycle)
+		{
+			timeLeft-=60;
+			window.webContents.send('timeUpdate', timeLeft);
+		}
+	}
 });  
  
 ipcMain.on('timerPause', function (event) {
@@ -671,7 +688,9 @@ function readTokenFromFile()
 		window.webContents.send('hideLogin');
 		//Enable the calendar checkbox
 		window.webContents.send('enableCalendarCheckbox');
-		//Just as a test I'll run checkCalendar here
+		//Show the calendar button in stats
+		window.webContents.send('showCalendarButton');
+		//Check if our calendar exists
 		checkCalendar(oAuth2Client);
 	}
 }
@@ -719,6 +738,8 @@ function(event)
 			//Enable gFeatures
 			gFeatures=true;
 			store.set('gFeatures', true);
+			//Show the calendar button in stats
+			window.webContents.send('showCalendarButton');
 			//Check if the calendar exists, create a new one if not, get the id, all that stuff
 			checkCalendar(oAuth2Client);
 			}
@@ -740,6 +761,8 @@ function(event){
 	window.webContents.send('showLogin');
 	//Disable the calendar checkbox
 	window.webContents.send('disableCalendarCheckbox');
+	//Hide the calendar button in stats
+	window.webContents.send('hideCalendarButton');
 });
 
 function insertEvent(calendarId, startEvent, endEvent, nameEvent, auth)

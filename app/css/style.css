@@ -91,6 +91,12 @@ a:hover
 	height: 3em;
 }
 
+
+#google-button, #google-button-calendar
+{
+	background-color: rgb(0,87,231);
+}
+
 .workIcon
 {
 	height: 3em;
