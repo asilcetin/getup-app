@@ -9,14 +9,18 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
     	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/4.12.0/bootstrap-social.min.css">
+        <link rel="stylesheet" type="text/css" href="intro/introjs.css">
+
 		<!-- Stylesheets -->
 	</head>
 	<body>
-		<div class="window homeWindow">
-		
+		<div class="window homeWindow" >
+            <div data-step="1" data-intro="This is a pomodoro-like app which helps you to manage your time to increase your productivity. You can set you work and break cycle which will automatically countdown and notify you." data-position='auto'></div>
+<!--            <a id='startButton' class="btn btn-large btn-success" href="javascript:void(0);" onclick="javascript:introJs().start();">Show me how</a>-->
+
 			<div class="controls">
-				<a id="stop"><i class="icon stopControl">&#xe802;</i></a>
-				<a id="playPause" class="runningPlayPauseControl"><i class="icon playPauseControl">&#xe801;</i></a>
+				<a id="stop"><i class="icon stopControl" data-step="3" data-intro="If yout stop the cycle the timer will reset" data-position='auto'>&#xe802;</i></a>
+				<a id="playPause" class="runningPlayPauseControl"><i class="icon playPauseControl"  data-step="2" data-intro="Here you can start, pause and resume your cycles" data-position='auto'>&#xe801;</i></a>
 				<p id="remainingDuration">10:00</p>
 			</div>		
 			<div class="timers">
@@ -24,17 +28,17 @@
 					<img class="exerciseIcon" src="icons/moving.svg" alt="exercise">
 				</div>
 				<div class="exerciseTimer">
-					<a id="exerciseUp"><i class="icon timerArrow">&#xe804;</i></a><br/>
+					<a id="exerciseUp"><i class="icon timerArrow"  data-step="4" data-intro="Tapping this arrow INCREASESS the BREAK time." data-position='auto' >&#xe804;</i></a><br/>
 						<p id="exerciseDuration">5</p>
-					<a id="exerciseDown"><i class="icon timerArrow">&#xe805;</i></a>
+					<a id="exerciseDown"><i class="icon timerArrow" data-step="5" data-intro="Tapping this arrow DECREASES the BREAK time." data-position='auto'>&#xe805;</i></a>
 				</div>
 				<div class="timerIcon">
 				<img class="workIcon" src="icons/working.svg" alt="work">
 				</div>
 				<div class="workTimer">
-					<a id="workUp"><i class="icon timerArrow">&#xe804;</i></a><br/>
+					<a id="workUp"><i class="icon timerArrow" data-step="6" data-intro="Tapping this arrow INCREASES the WORK time." data-position='auto'>&#xe804;</i></a><br/>
 						<p id="workDuration">30</p>
-					<a id="workDown"><i class="icon timerArrow">&#xe805;</i></a>
+					<a id="workDown"><i class="icon timerArrow" data-step="7" data-intro="Tapping this arrow DECREASES the WORK time." data-position='auto'>&#xe805;</i></a>
 				</div>
 			</div>		
 		</div>
@@ -90,12 +94,13 @@
 		</div>
 		<nav class="navigation">
 			<a id="home"><i class="icon icon_active homeIcon">&#xe807;</i></a>
-			<a id="settings"><i class="icon settingsIcon">&#xe800;</i></a>
+			<a id="settings"><i class="icon settingsIcon" data-step="8" data-intro="This icon displays a settings window." data-position='auto'>&#xe800;</i></a>
 			<a id="stats"><i class="icon statsIcon">&#xe808;</i></a>
 			<a id="quit"><i class="icon">&#xe809;</i></a>
 		</nav>	
 	</body>
 	<script>
+        require("../app/intro/intro.js");
 		require("../app/js/renderer_index.js");
 		require("../app/js/renderer_stats.js");
 		require("../app/js/renderer_settings.js");

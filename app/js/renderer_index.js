@@ -2,6 +2,8 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 const {ipcRenderer} = require('electron')
+const IntroJs = require('intro.js');
+
 
 const remainingDuration = document.getElementById("remainingDuration");
 const exerciseDuration = document.getElementById("exerciseDuration");
@@ -104,6 +106,13 @@ function (event, object)
 	workDuration.innerHTML=convertTime(object.workDuration);
 	exerciseDuration.innerHTML=convertTime(object.exerciseDuration);
 	remainingDuration.innerHTML=convertTime(object.remainingDuration);
+}
+);
+
+ipcRenderer.on('startTutorial', 
+function (event, object)
+{
+	IntroJs().start();
 }
 );
 

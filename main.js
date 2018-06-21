@@ -70,7 +70,7 @@ function createWindow() {
   }))
 
   // Open the DevTools.
-  window.webContents.openDevTools()
+  // window.webContents.openDevTools()
   
   // Hide the window when it loses focus
   window.on('blur', () => {
@@ -203,7 +203,8 @@ const store = new Store({
   allowNotifications: true,
   allowSounds: true,
   breakNotification: 'Have a break!',
-  workNotification: 'Back to work!'
+  workNotification: 'Back to work!',
+  firstTimeStart: true
   }	
 });
 
@@ -389,6 +390,10 @@ ipcMain.on('getData',
 function(event)
 {
 	window.webContents.send('init', {workDuration: defaultTimeLeft, exerciseDuration: defaultBreakTime, remainingDuration: timeLeft});
+	if (store.get('firstTimeStart') == true) {
+		window.webContents.send('startTutorial');
+		store.set('firstTimeStart', false);
+	}
 }
 );
  
