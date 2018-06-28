@@ -9,6 +9,7 @@
 body
 {
 	background: white;
+	overflow: hidden;
 }
 
 #stats_canvas
