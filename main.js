@@ -660,7 +660,7 @@ const scopes=["https://www.googleapis.com/auth/calendar"];
 //Checked for google features being enabled
 var gFeatures=false;
 //The name we will always use for our calendar
-var appCalendarName="getuppAppActivityCalendar";
+var appCalendarName="GetUp App Cycles";
 //The ID of the calendar we created! This must get populated on launch
 var appCalendarId=null;
 
