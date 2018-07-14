@@ -240,8 +240,11 @@ function startTimer()
 {
 // Create the ticker
 ticker = new AdjustingInterval(doWork, 1000, doError);
-// Start the timer
-ticker.start();
+// Don't start the timer automatically first time user (e.g. during intro)
+if (store.get('firstTimeStart') != true) {
+  // Start the timer
+  ticker.start();
+}
 //We have to create the work start on the first start to make sure the app starts logging properly
 workStartTime=new Date();
 }
@@ -555,7 +558,6 @@ ipcMain.on('saveCustomWorkNotification', function (event, value) {
 ipcMain.on('saveCustomBreakNotification', function (event, value) {
   store.set('breakNotification', value);
 })
-
 
 /* Currently not used
 ipcMain.on('show-window', () => {

@@ -18,6 +18,7 @@ const btnExerciseDown = document.getElementById("exerciseDown");
 const btnWorkUp = document.getElementById("workUp");
 const btnWorkDown = document.getElementById("workDown");
 
+const appIntro = IntroJs();
 
 //Seconds into mins:secs converter
 function convertTime (seconds) {
@@ -112,9 +113,14 @@ function (event, object)
 ipcRenderer.on('startTutorial', 
 function (event, object)
 {
-	IntroJs().start();
+	appIntro.start();
 }
 );
+
+// After intro is finished, start the timer
+appIntro.onexit(function () {
+  ipcRenderer.send('timerResume');
+});
 
 ipcRenderer.on('timeUpdate',
 function(event, value)
