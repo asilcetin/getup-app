@@ -70,7 +70,7 @@ function createWindow() {
   }))
 
   // Open the DevTools.
-  window.webContents.openDevTools()
+  // window.webContents.openDevTools()
   
   // Hide the window when it loses focus
   window.on('blur', () => {
@@ -687,7 +687,7 @@ const browserWindowParams=
 function readTokenFromFile()
 {
 	var token=store.get('OAuth2Token');
-	if (token!=undefined && token)
+	if (token!=undefined && token && Object.keys(token).length != 0)
 	{
 		//Parse the token JSON and set the credentials
 		oAuth2Client.setCredentials(token);
