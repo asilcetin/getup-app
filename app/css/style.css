@@ -120,14 +120,14 @@ a:hover
   text-align: center;
   height: 100px;
   padding-left: 15px;
-  padding-right: 15px;
+  width: 75px;
 }
 
 .timerIcon {
   float: left;
   text-align: center;
   height: 100px;
-  padding-left: 25px;
+  padding-left: 30px;
 }
 
 .workTimer:after, .exerciseTimer:after, .timerIcon:after
